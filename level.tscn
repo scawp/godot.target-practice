@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://j72mp70y4aqt"]
+
+[ext_resource type="Script" path="res://spawner.gd" id="1_w6x03"]
+[ext_resource type="PackedScene" uid="uid://b5qig6gax5kf0" path="res://Target/target.tscn" id="2_pw7ag"]
+
+[node name="TargetSpawner" type="Node2D"]
+y_sort_enabled = true
+script = ExtResource("1_w6x03")
+target_scene = ExtResource("2_pw7ag")

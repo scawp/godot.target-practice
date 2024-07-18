@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://dwgrf22rmoncw"]
+
+[ext_resource type="Texture2D" uid="uid://bcy8s526yu5n0" path="res://Target/shot_grey_large.png" id="1_37nc6"]
+
+[node name="holes" type="Sprite2D"]
+scale = Vector2(0.15, 0.15)
+texture = ExtResource("1_37nc6")

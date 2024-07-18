@@ -1,0 +1,9 @@
+[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://cd6313ohrjvl5"]
+
+[ext_resource type="FontFile" uid="uid://bhuxxt1ws5cxy" path="res://Assets/fonts/OpenDyslexic-Bold.otf" id="1_rkw7v"]
+
+[resource]
+font = ExtResource("1_rkw7v")
+font_size = 100
+outline_size = 5
+outline_color = Color(0, 0, 0, 1)

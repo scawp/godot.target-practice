@@ -1,0 +1,286 @@
+[gd_scene load_steps=19 format=3 uid="uid://c5f12wgdur6in"]
+
+[ext_resource type="Script" path="res://game.gd" id="1_s5u4b"]
+[ext_resource type="PackedScene" uid="uid://e5amo0ln1bhu" path="res://parallax_background.tscn" id="2_dbo45"]
+[ext_resource type="PackedScene" uid="uid://j72mp70y4aqt" path="res://level.tscn" id="3_om7tu"]
+[ext_resource type="PackedScene" uid="uid://b5qig6gax5kf0" path="res://Target/target.tscn" id="4_ouqcb"]
+[ext_resource type="PackedScene" uid="uid://dwgrf22rmoncw" path="res://Target/holes.tscn" id="5_2xmfw"]
+[ext_resource type="Shader" path="res://test.gdshader" id="5_82a1v"]
+[ext_resource type="FontFile" uid="uid://bhuxxt1ws5cxy" path="res://Assets/fonts/OpenDyslexic-Bold.otf" id="5_pp5fp"]
+[ext_resource type="LabelSettings" uid="uid://cd6313ohrjvl5" path="res://label_settings.tres" id="6_mqx2q"]
+[ext_resource type="LabelSettings" uid="uid://cy8up8bo5fks1" path="res://smaller_label.tres" id="7_gx8ud"]
+[ext_resource type="AudioStream" uid="uid://ds73k6tads2cr" path="res://Assets/Audio/confirmation_004.ogg" id="10_6p2ex"]
+[ext_resource type="AudioStream" uid="uid://des48457fl54k" path="res://Assets/Audio/metalPot3.ogg" id="10_uxm26"]
+[ext_resource type="AudioStream" uid="uid://bv22tt1uimypa" path="res://Assets/Audio/fm-freemusic-give-me-a-smile(chosic.com).mp3" id="11_ub1vk"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_406s2"]
+shader = ExtResource("5_82a1v")
+shader_parameter/enableBounce = true
+shader_parameter/speed = 1.5
+shader_parameter/height = 0.1
+shader_parameter/size = Vector2(0, 0)
+shader_parameter/multiColour = false
+shader_parameter/fadeOut = 1.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_vsu3t"]
+line_spacing = -136.0
+font = ExtResource("5_pp5fp")
+font_size = 176
+outline_size = 16
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_engvq"]
+line_spacing = -19.0
+font = ExtResource("5_pp5fp")
+font_size = 45
+outline_size = 5
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_haf0k"]
+shader = ExtResource("5_82a1v")
+shader_parameter/enableBounce = true
+shader_parameter/speed = 5.0
+shader_parameter/height = 0.26
+shader_parameter/size = Vector2(450, 84)
+shader_parameter/multiColour = true
+shader_parameter/fadeOut = 2.0
+
+[sub_resource type="GDScript" id="GDScript_on5ti"]
+script/source = "extends Label
+
+var phase : float = 0
+@export var speed : float = 10
+@export var height : float = 20 : 
+	set(f): height = clampf(f, 0, 360) #do we want a max?
+@export var decay: float = 5 
+var dt: float = 0
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	print(\"label size\" + str(size))
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	set_pivot_offset(size / 2) #TODO: Needs to be set when text changes or container?
+	dt += delta
+	#print(\"cos\"+str(cos(dt)))
+	if height > 0:
+	#	print(\"phase\" + str(phase))
+		phase += delta * speed
+		set_rotation_degrees(cos(phase) * height)
+		height -= (decay * delta)
+		#label_settings.font_size += ()
+	else:
+		phase = 0
+
+func _on_target_target_cords(cords: Vector2):
+	height = 20
+	print(\"set height\")
+	#text = str(cords.distance_to(Vector2(0,0)))
+	pass # Replace with function body.
+"
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_ib3g8"]
+random_pitch = 1.95
+streams_count = 1
+stream_0/stream = ExtResource("10_uxm26")
+stream_0/weight = 1.0
+
+[node name="Game" type="Node2D"]
+script = ExtResource("1_s5u4b")
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+texture_filter = 1
+offset_right = 1281.0
+offset_bottom = 800.0
+stretch = true
+stretch_shrink = 4
+
+[node name="SubViewport2" type="SubViewport" parent="SubViewportContainer"]
+handle_input_locally = false
+snap_2d_transforms_to_pixel = true
+snap_2d_vertices_to_pixel = true
+physics_object_picking = true
+gui_embed_subwindows = true
+size = Vector2i(320, 200)
+render_target_update_mode = 4
+
+[node name="ParallaxBackground" parent="SubViewportContainer/SubViewport2" instance=ExtResource("2_dbo45")]
+camera_velocity = Vector2(5, 0)
+
+[node name="TargetSpawner" parent="SubViewportContainer/SubViewport2" instance=ExtResource("3_om7tu")]
+visible = false
+
+[node name="Summary" parent="SubViewportContainer/SubViewport2" instance=ExtResource("4_ouqcb")]
+visible = false
+position = Vector2(160, 100)
+scale = Vector2(3, 3)
+holes_scene = ExtResource("5_2xmfw")
+
+[node name="Main Menu" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 66.0
+offset_top = 34.0
+offset_right = 106.0
+offset_bottom = 74.0
+
+[node name="Splash" type="Label" parent="Main Menu"]
+texture_filter = 2
+material = SubResource("ShaderMaterial_406s2")
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 1113.0
+offset_bottom = 692.0
+grow_horizontal = 2
+grow_vertical = 2
+rotation = -0.0436332
+text = "Target
+Practice"
+label_settings = SubResource("LabelSettings_vsu3t")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AvgLabel" type="Label" parent="Main Menu"]
+layout_mode = 0
+offset_left = 290.0
+offset_top = 493.0
+offset_right = 870.0
+offset_bottom = 573.0
+text = "Click anywhere to start"
+label_settings = ExtResource("7_gx8ud")
+horizontal_alignment = 2
+
+[node name="Instructions" type="Label" parent="Main Menu"]
+layout_mode = 0
+offset_left = -53.0
+offset_top = 627.0
+offset_right = 356.0
+offset_bottom = 768.0
+text = "Quit - B or Esc
+End - A or Space"
+label_settings = SubResource("LabelSettings_engvq")
+
+[node name="GUI" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="ExciteText" type="Label" parent="GUI"]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_haf0k")
+layout_mode = 2
+offset_left = 188.0
+offset_top = 508.0
+offset_right = 1103.35
+offset_bottom = 683.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 11
+text = "TEST"
+label_settings = ExtResource("6_mqx2q")
+horizontal_alignment = 1
+vertical_alignment = 1
+script = SubResource("GDScript_on5ti")
+speed = 7.0
+height = 0.0
+decay = 8.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GUI"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.872
+anchor_top = 1.734
+anchor_right = -0.872
+anchor_bottom = 1.734
+offset_left = 38.88
+offset_top = -87.36
+offset_right = 421.88
+offset_bottom = 151.64
+mouse_filter = 2
+theme_override_constants/separation = -35
+
+[node name="AccuracyContainer" type="HBoxContainer" parent="GUI/VBoxContainer"]
+visible = false
+layout_mode = 2
+mouse_filter = 2
+
+[node name="AccurracyLabel" type="Label" parent="GUI/VBoxContainer/AccuracyContainer"]
+layout_mode = 2
+text = "Accurracy: "
+label_settings = ExtResource("7_gx8ud")
+horizontal_alignment = 2
+
+[node name="AccurracyScore" type="Label" parent="GUI/VBoxContainer/AccuracyContainer"]
+layout_mode = 2
+label_settings = ExtResource("7_gx8ud")
+
+[node name="AvgContainer" type="HBoxContainer" parent="GUI/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="AvgLabel" type="Label" parent="GUI/VBoxContainer/AvgContainer"]
+layout_mode = 2
+text = "Targets Destroyed: "
+label_settings = ExtResource("7_gx8ud")
+horizontal_alignment = 2
+
+[node name="AvgScore" type="Label" parent="GUI/VBoxContainer/AvgContainer"]
+layout_mode = 2
+label_settings = ExtResource("7_gx8ud")
+
+[node name="LatencyContainer" type="HBoxContainer" parent="GUI/VBoxContainer"]
+visible = false
+layout_mode = 2
+mouse_filter = 2
+
+[node name="LatancyLabel" type="Label" parent="GUI/VBoxContainer/LatencyContainer"]
+visible = false
+layout_mode = 2
+text = "Reaction Time: "
+label_settings = ExtResource("7_gx8ud")
+
+[node name="LatencyScore" type="Label" parent="GUI/VBoxContainer/LatencyContainer"]
+visible = false
+layout_mode = 2
+label_settings = ExtResource("7_gx8ud")
+
+[node name="AvgContainer2" type="HBoxContainer" parent="GUI/VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="AvgLabel" type="Label" parent="GUI/VBoxContainer/AvgContainer2"]
+layout_mode = 2
+text = "Avg Reaction Time: "
+label_settings = ExtResource("7_gx8ud")
+horizontal_alignment = 2
+
+[node name="AvgScore" type="Label" parent="GUI/VBoxContainer/AvgContainer2"]
+layout_mode = 2
+label_settings = ExtResource("7_gx8ud")
+
+[node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("10_6p2ex")
+volume_db = -15.186
+pitch_scale = 0.8
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamRandomizer_ib3g8")
+volume_db = -9.743
+max_polyphony = 3
+
+[node name="BGM" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("11_ub1vk")
+volume_db = -30.0
+autoplay = true
