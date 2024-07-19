@@ -112,6 +112,8 @@ camera_velocity = Vector2(5, 0)
 
 [node name="TargetSpawner" parent="SubViewportContainer/SubViewport2" instance=ExtResource("3_om7tu")]
 visible = false
+despawn_on = false
+despawn_rate = 2.0
 
 [node name="Summary" parent="SubViewportContainer/SubViewport2" instance=ExtResource("4_ouqcb")]
 visible = false
@@ -137,9 +139,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -20.0
-offset_top = -20.0
+offset_top = -26.0
 offset_right = 1113.0
-offset_bottom = 692.0
+offset_bottom = 686.0
 grow_horizontal = 2
 grow_vertical = 2
 rotation = -0.0436332
@@ -150,6 +152,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="AvgLabel" type="Label" parent="Main Menu"]
+visible = false
 layout_mode = 0
 offset_left = 290.0
 offset_top = 493.0
@@ -159,15 +162,97 @@ text = "Click anywhere to start"
 label_settings = ExtResource("7_gx8ud")
 horizontal_alignment = 2
 
-[node name="Instructions" type="Label" parent="Main Menu"]
+[node name="Link" type="Label" parent="Main Menu"]
+visible = false
 layout_mode = 0
-offset_left = -53.0
-offset_top = 627.0
-offset_right = 356.0
-offset_bottom = 768.0
-text = "Quit - B or Esc
-End - A or Space"
+offset_left = 290.0
+offset_top = 493.0
+offset_right = 870.0
+offset_bottom = 573.0
+text = "Click anywhere to start"
+label_settings = ExtResource("7_gx8ud")
+horizontal_alignment = 2
+
+[node name="By Scawp" type="Label" parent="Main Menu"]
+layout_mode = 0
+offset_left = 744.0
+offset_top = 453.0
+offset_right = 977.0
+offset_bottom = 533.0
+rotation = -0.0558505
+text = "By Scawp"
+label_settings = ExtResource("7_gx8ud")
+horizontal_alignment = 2
+
+[node name="Instructions" type="Label" parent="Main Menu"]
+layout_mode = 1
+offset_left = -55.0
+offset_top = -34.0
+offset_right = 354.0
+offset_bottom = 107.0
+text = "Quit Game - B or Esc
+End Run - A or Space
+Menu - X or R "
 label_settings = SubResource("LabelSettings_engvq")
+
+[node name="GridContainer" type="GridContainer" parent="Main Menu"]
+layout_mode = 0
+offset_left = 204.0
+offset_top = 542.0
+offset_right = 938.0
+offset_bottom = 762.0
+columns = 3
+
+[node name="Endless" type="Label" parent="Main Menu/GridContainer"]
+layout_mode = 2
+text = "Endless Mode"
+label_settings = ExtResource("7_gx8ud")
+
+[node name="Easy" type="Button" parent="Main Menu/GridContainer"]
+custom_minimum_size = Vector2(200, 2.08165e-12)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_pp5fp")
+theme_override_font_sizes/font_size = 40
+text = "Easy"
+
+[node name="Hard" type="Button" parent="Main Menu/GridContainer"]
+custom_minimum_size = Vector2(200, 2.08165e-12)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_pp5fp")
+theme_override_font_sizes/font_size = 40
+text = "Hard"
+
+[node name="Endless2" type="Label" parent="Main Menu/GridContainer"]
+layout_mode = 2
+text = "Timed"
+label_settings = ExtResource("7_gx8ud")
+
+[node name="Harder" type="Button" parent="Main Menu/GridContainer"]
+custom_minimum_size = Vector2(200, 2.08165e-12)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_pp5fp")
+theme_override_font_sizes/font_size = 40
+text = "Harder"
+
+[node name="Harderer" type="Button" parent="Main Menu/GridContainer"]
+custom_minimum_size = Vector2(200, 2.08165e-12)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5_pp5fp")
+theme_override_font_sizes/font_size = 40
+text = "Harderer"
+
+[node name="LinkButton" type="LinkButton" parent="Main Menu"]
+layout_mode = 0
+offset_left = 314.0
+offset_top = 692.0
+offset_right = 859.0
+offset_bottom = 762.0
+theme_override_colors/font_color = Color(0.623529, 0.054902, 0.478431, 1)
+theme_override_colors/font_hover_color = Color(0.427626, 0.021164, 0.324173, 1)
+theme_override_fonts/font = ExtResource("5_pp5fp")
+theme_override_font_sizes/font_size = 40
+text = "youtube.com/chinballsTV"
+uri = "https://youtube.com/chinballsTV"
 
 [node name="GUI" type="Control" parent="."]
 visible = false
@@ -277,10 +362,15 @@ pitch_scale = 0.8
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = SubResource("AudioStreamRandomizer_ib3g8")
-volume_db = -9.743
+volume_db = -17.353
 max_polyphony = 3
 
 [node name="BGM" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("11_ub1vk")
 volume_db = -30.0
 autoplay = true
+
+[connection signal="pressed" from="Main Menu/GridContainer/Easy" to="." method="_on_easy_pressed"]
+[connection signal="pressed" from="Main Menu/GridContainer/Hard" to="." method="_on_hard_pressed"]
+[connection signal="pressed" from="Main Menu/GridContainer/Harder" to="." method="_on_harder_pressed"]
+[connection signal="pressed" from="Main Menu/GridContainer/Harderer" to="." method="_on_harderer_pressed"]

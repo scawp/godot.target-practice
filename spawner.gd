@@ -2,18 +2,40 @@ extends Node2D
 
 @export var target_scene: PackedScene
 @export var spawn_points: Array[Marker2D]
-@export var spawn_rate: float = 1.0
 @export var spawn_on_death := true
+@export var spawn_rate: float = 1.0
+@export var despawn_on := true
+@export var despawn_rate: float = 1.0
+@export var max_spawns: int = 0
 #var targets: Array[PackedScene] 
 var min: Vector2i
 var max: Vector2i
 var hard_mode = false
+var harderer_mode = false
+var harderer_scale = Vector2i(1.0, 1.0)
+var current_spawn: int = 0 
 
-func spawn_new():
+func spawn_new(reset_hack = false):
+	current_spawn += 1
+	if max_spawns > 0 and current_spawn > max_spawns:
+		await get_tree().create_timer(despawn_rate + 0.2).timeout
+		$"../../..".show_end_screen()
+		return
+		
 	var new_target = target_scene.instantiate()
+	
+	if reset_hack:
+		#wtf man :p
+		new_target.reset_hack()
 
 	if hard_mode:
 		new_target.scale = Vector2(0.667, 0.667)
+	elif harderer_mode:
+		new_target.scale = harderer_scale
+		harderer_scale = harderer_scale * 0.94
+		
+	if despawn_on:
+		new_target.despawn = despawn_rate
 
 	new_target.start_position(
 		Vector2i(
@@ -21,8 +43,8 @@ func spawn_new():
 			randi_range(min.y, max.y)))
 	new_target.connect("target_cords", _on_target_cords)
 	add_child(new_target)
-	await get_tree().create_timer(spawn_rate).timeout
 	if spawn_on_death == false:
+		await get_tree().create_timer(spawn_rate).timeout
 		spawn_new()
 	
 func clamp_spawn_points():
@@ -33,7 +55,7 @@ func clamp_spawn_points():
 func _ready():
 	%ExciteText.text = ""
 	clamp_spawn_points()
-	spawn_new()
+	#spawn_new()
 
 func _on_target_cords(cords: Vector2):
 	var dist: float = cords.distance_to(Vector2(0,0))
@@ -45,7 +67,7 @@ func _on_target_cords(cords: Vector2):
 	var enableBounce := false
 	var height = %ExciteText.height
 	if dist < 3:
-		#$"../../../AudioStreamPlayer2".play()
+		#$"../../../AudioStreamPlayer2".play() #annoying
 		label = "Perfect!!!"
 		enabled = true
 		multi = true

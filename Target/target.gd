@@ -7,6 +7,9 @@ signal target_cords(cords)
 @onready var spawn_time := Time.get_ticks_msec()
 var end_time := 0.0
 var latancy := 0.0
+var missed := false
+
+var despawn := 0.0
 
 var hit_point := Vector2i()
 
@@ -20,14 +23,24 @@ static var total_hit_point = Vector2i()
 static var next_prio := 0
 static var summary = false
 
+func reset_hack():
+	total_latancy = 0.0
+	total_targets = 0
+	total_hit_point = Vector2i()
+	next_prio = 0
+	summary = false
+	
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	prio = next_prio 
 	next_prio += 1
 	z_index = prio
-	#process_priority = prio
-	#process_physics_priority = prio
-	pass
+	
+	if despawn > 0.0:
+		await get_tree().create_timer(despawn).timeout
+		missed = true
+		hide()
 
 func _init():
 	pass
